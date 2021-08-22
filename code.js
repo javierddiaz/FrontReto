@@ -48,12 +48,61 @@ on(document, 'click', '.btnBorrar', e => {
 
     alertify.confirm("Desea eliminar el equipo",
         function () {
-            fetch(url+id,{
-                method:'DELETE'
+            fetch(url + id, {
+                method: 'DELETE'
             })
-            .then(()=>location.reload())
+                .then(() => location.reload())
         },
         function () {
             alertify.error('Cancel')
         });
+})
+
+let idForm = 0
+on(document, 'click', '.btnEditar', e => {
+
+    const fila = e.target.parentNode.parentNode
+    idForm = fila.children[0].innerHTML
+    const nombreForm = fila.children[1].innerHTML
+
+    nombre.value = nombreForm
+    opcion = 'editar'
+    modalequipos.show()
+})
+
+formEquipos.addEventListener('submit', (e) => {
+    e.preventDefault()
+    if (opcion == 'crear') {
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                nombre:nombre.value
+            })
+        })
+        .then(response => response.json())
+        .then(data=>{
+            const nuevoEquipo =[]
+            nuevoEquipo.push(data)
+            mostrar(nuevoEquipo)
+        })
+    }
+    if (opcion == 'editar') {
+
+        fetch(url+idForm, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                id:idForm,
+                nombre:nombre.value
+            })
+        })
+        .then(response => location.reload())
+
+    }
+    modalequipos.hide()
 })
