@@ -8,6 +8,7 @@ const nombreusuario = document.getElementById('nombre')
 const correousuario = document.getElementById('correo')
 const usernameusuario = document.getElementById('username')
 const passwordusuario = document.getElementById('password')
+const confirmarusuario = document.getElementById('confirmar')
 let opcion = ''
 
 btnCrear.addEventListener('click', () => {
@@ -15,6 +16,7 @@ btnCrear.addEventListener('click', () => {
     correousuario.value = ''
     usernameusuario.value = ''
     passwordusuario.value = ''
+    confirmarusuario.value = ''
     modalusuarios.show()
     opcion = 'crear'
 })
@@ -22,12 +24,12 @@ btnCrear.addEventListener('click', () => {
 //funcion para mostra resultados
 
 const mostrar = (usuarios) => {
-    usuarios.forEach(articulo => {
+    usuarios.forEach(usuario => {
         resultados += `<tr>
-                        <td width="10%">${articulo.id}</td>
-                        <td width="20%">${articulo.nombre}</td>
-                        <td width="20%">${articulo.correo}</td>
-                        <td width="20%">${articulo.username}</td>
+                        <td width="10%">${usuario.id}</td>
+                        <td width="20%">${usuario.nombre}</td>
+                        <td width="20%">${usuario.correo}</td>
+                        <td width="20%">${usuario.username}</td>
                         <td class="text-center" width="20%"><a class="btnEditar btn btn-primary">Editar</a><a class="btnBorrar btn btn-danger">Borrar</a></td>
                     </tr>`
     })
@@ -84,43 +86,52 @@ on(document, 'click', '.btnEditar', e => {
 
 formusuarios.addEventListener('submit', (e) => {
     e.preventDefault()
-    if (opcion == 'crear') {
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                nombre:nombre.value,
-                correo:correo.value,
-                username:username.value,
-                password:password.value
-            })
-        })
-        .then(response => response.json())
-        .then(data=>{
-            const nuevousuario =[]
-            nuevousuario.push(data)
-            mostrar(nuevousuario)
-        })
-    }
-    if (opcion == 'editar') {
 
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                id:idForm,
-                nombre:nombre.value,
-                correo:correo.value,
-                username:username.value,
-                password:password.value
-            })
-        })
-        .then(response => location.reload())
-
+    if ((password.value != confirmar.value) || password.value =='' || confirmar.value=='') {
+        alertify
+            .alert("No coindice la confirmación del password", function () {
+                alertify.message('OK');
+            });
     }
-    modalusuarios.hide()
+    else {
+        if (opcion == 'crear') {
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    nombre: nombre.value,
+                    correo: correo.value,
+                    username: username.value,
+                    password: password.value
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const nuevousuario = []
+                    nuevousuario.push(data)
+                    mostrar(nuevousuario)
+                })
+        }
+        if (opcion == 'editar') {
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: idForm,
+                    nombre: nombre.value,
+                    correo: correo.value,
+                    username: username.value,
+                    password: password.value
+                })
+            })
+                .then(response => location.reload())
+
+        }
+        modalusuarios.hide()
+    }
 })

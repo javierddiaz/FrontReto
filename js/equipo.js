@@ -16,10 +16,10 @@ btnCrear.addEventListener('click', () => {
 //funcion para mostra resultados
 
 const mostrar = (equipos) => {
-    equipos.forEach(articulo => {
+    equipos.forEach(equipos => {
         resultados += `<tr>
-                        <td width="10%">${articulo.id}</td>
-                        <td width="70%">${articulo.nombre}</td>
+                        <td width="10%">${equipos.id}</td>
+                        <td width="70%">${equipos.nombre}</td>
                         <td class="text-center" width="20%"><a class="btnEditar btn btn-primary">Editar</a><a class="btnBorrar btn btn-danger">Borrar</a></td>
                     </tr>`
     })
